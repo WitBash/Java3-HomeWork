@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 public class Box<T extends Fruit> {
     private ArrayList<T> boxArrayList;
-
     public Box() {
         this.boxArrayList = new ArrayList<>();
     }

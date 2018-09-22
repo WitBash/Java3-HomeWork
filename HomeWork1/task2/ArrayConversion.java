@@ -5,7 +5,6 @@ import java.util.ArrayList;
 public class ArrayConversion <T> {
     private T[] array;
     private ArrayList<T> arrayList;
-
     public ArrayConversion(T[] array) {
         this.array = array;
     }

@@ -36,9 +36,7 @@ public class MainTask3 {
         System.out.println(boxOrange.compare(boxApple1));
 
         System.out.println("Вес коробки 2 с яблоками равен " + boxApple2.getBoxWeight());
-
         boxApple1.pourFruitIntoAnotherBox(boxApple2);
-
         System.out.println("Вес коробки 2 с яблоками после пересыпки равен " + boxApple2.getBoxWeight());
         System.out.println("Вес коробки 1 с яблоками после пересыпки равен " + boxApple1.getBoxWeight());
     }
