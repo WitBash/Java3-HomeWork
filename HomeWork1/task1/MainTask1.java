@@ -1,7 +1,6 @@
 package HomeWork1.task1;
 
 public class MainTask1 {
-
     public static void main(String[] args) {
         Integer [] inums  = {1,2,3,4,5};
         ChangeArray<Integer> array1= new ChangeArray<Integer>(inums);

@@ -2,7 +2,6 @@ package HomeWork1.task1;
 
 public class ChangeArray <T> {
     private T [] array;
-
     public ChangeArray(T[] array) {
         this.array = array;
     }
