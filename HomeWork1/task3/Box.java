@@ -1,9 +1,10 @@
 package HomeWork1.task3;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Box<T extends Fruit> {
-    private ArrayList<T> boxArrayList;
+    private List<T> boxArrayList;
     public Box() {
         this.boxArrayList = new ArrayList<>();
     }
@@ -25,7 +26,7 @@ public class Box<T extends Fruit> {
         else return false;
     }
 
-    public void pourFruitIntoAnotherBox(Box box) {
+    public void pourFruitIntoAnotherBox(Box <T> box) {
         for (int i = 0; i < this.boxArrayList.size(); i++) {
             box.setFruitInBox(this.boxArrayList.get(i));
         }
