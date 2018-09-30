@@ -3,16 +3,21 @@ package HomeWork2.HomeWork2_1;
 import HomeWork2.HomeWork2_2.AuthService;
 import HomeWork2.HomeWork2_2.BaseAuthService;
 
-import java.io.IOException;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Server {
     private ServerSocket serverSocket;
     private AuthService authService;
     private Map<String, ClientHandler> clients = new HashMap<>();
+
+    public static BufferedWriter bw = null;
+    public static FileWriter fw = null;
 
     public Server(AuthService authService) {
         this.authService = authService;
@@ -28,6 +33,7 @@ public class Server {
     public void close() {
         try {
             serverSocket.close();
+            bw.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -37,6 +43,12 @@ public class Server {
     public static void main(String[] args) {
         AuthService baseAuthService = new BaseAuthService();
         Server server = new Server(baseAuthService);
+        try {
+            fw = new FileWriter("LocalHistory.txt");
+            bw = new BufferedWriter(fw);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         server.start();
     }
 
@@ -84,5 +96,37 @@ public class Server {
         ClientHandler nickSender = clients.get(senderNick);
         if (nickSender != null) nickSender.sendMessage(pMsg);
         if (clients.containsKey(recipientNick)) clients.get(recipientNick).sendMessage(pMsg);
+    }
+
+    public void writeLocalHistory(String message) {
+        String str = message + "\r\n";
+        try {
+            bw.write(str);
+            bw.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void sendLocalHistory(String nick) {
+        try {
+            List<String> history = new ArrayList<>();
+            RandomAccessFile raf = new RandomAccessFile("LocalHistory.txt", "r");
+            String str;
+            while ((str = raf.readLine()) != null) {
+                history.add(str);
+            }
+            if (history.size() > 100) {
+                for (int i = history.size() - 100; i < history.size(); i++) {
+                    clients.get(nick).sendMessage(history.get(i));
+                }
+            } else {
+                for (int i = 0; i < history.size(); i++) {
+                    clients.get(nick).sendMessage(history.get(i));
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

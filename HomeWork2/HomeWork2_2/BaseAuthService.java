@@ -2,34 +2,78 @@ package HomeWork2.HomeWork2_2;
 
 import org.sqlite.JDBC;
 import java.sql.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class BaseAuthService implements AuthService {
-    private static final String DB_PATH = "D:/Учеба/java3/SQLite/users";
-    Connection conn;
+    private Map<String, User> users = new HashMap<>();
+    private static final String DB_PATH = "D:/Учеба/2_java3/SQLite/users.db";
+    private static Connection conn;
+    private static Statement stmt;
 
     public BaseAuthService() {
-            try {
-                conn = DriverManager.getConnection(JDBC.PREFIX + DB_PATH);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-    }
-
-    @Override
-    public String authByLoginAndPassword(String login, String password) {
         try {
-            Statement stmt = conn.createStatement();
-            for (int i = 1; i <= 3; i++) {
-                ResultSet rslogin = stmt.executeQuery("SELECT login FROM users");
-                ResultSet rspassword = stmt.executeQuery("SELECT password FROM users");
-                ResultSet rsnickname = stmt.executeQuery("SELECT nickname FROM users");
-                if (login.equals(rslogin.getString(i)) && password.equals(rspassword.getString(i))) {
-                    return rsnickname.getString(i);
-                }
+            connect();
+            ResultSet rs = stmt.executeQuery("SELECT nickname,login, password FROM users;");
+            while(rs.next()){
+                String nickname = rs.getString(1);
+                String login = rs.getString(2);
+                String password = rs.getString(3);
+                users.put(nickname, new User(login,password,nickname));
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        finally {
+            disconnect();
+        }
+    }
+
+    private void disconnect() {
+        try {
+            stmt.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        try {
+            conn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void connect() throws SQLException{
+            conn = DriverManager.getConnection(JDBC.PREFIX + DB_PATH);
+            stmt = conn.createStatement();
+    }
+
+    @Override
+    public String authByLoginAndPassword(String login, String password) {
+        for (User user : users.values()) {
+            if (login.equals(user.getLogin()) && password.equals(user.getPassword()) && user.isActive()) {
+                return user.getNickname();
+            }
+        }
         return null;
+    }
+
+    @Override
+    public User createOrActivateUser(String login, String password, String nick) {
+        User user = new User(login, password, nick);
+        if (users.containsKey(nick)) {
+            user.setActive(true);
+            System.out.println("User with nick" + nick + "already exist");
+        } else users.put(nick, user);
+        return user;
+    }
+
+    @Override
+    public boolean deactivateUser(String nick) {
+        User user = users.get(nick);
+        if (user != null) {
+            user.setActive(false);
+            return true;
+        }
+        return false;
     }
 }

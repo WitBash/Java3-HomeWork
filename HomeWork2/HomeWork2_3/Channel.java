@@ -9,5 +9,7 @@ public interface Channel {
 
     Message getMessage();
 
+    String getStringMessage();
+
     boolean hasNextLine();
 }

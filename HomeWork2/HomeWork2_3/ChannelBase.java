@@ -8,6 +8,8 @@ public class ChannelBase implements Channel {
     private Scanner sc;
     private PrintWriter pw;
 
+
+
     public ChannelBase(InputStream inputStream, OutputStream outputStream) {
         sc = new Scanner(inputStream);
         pw = new PrintWriter(outputStream, true);
@@ -28,7 +30,6 @@ public class ChannelBase implements Channel {
         pw.println(message);
     }
 
-
     @Override
     public Message getMessage() {
         String s = sc.nextLine();
@@ -41,6 +42,12 @@ public class ChannelBase implements Channel {
         if (s.startsWith("/w "))
             return new Message(MessageType.PRIVATE_MESSAGE,s.substring(3).trim());
         return new Message(MessageType.BROADCAST_CHAT,s);
+    }
+
+    @Override
+    public String getStringMessage() {
+        String s = sc.nextLine();
+        return s;
     }
 
     @Override

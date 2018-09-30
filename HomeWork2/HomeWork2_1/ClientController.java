@@ -2,8 +2,7 @@ package HomeWork2.HomeWork2_1;
 
 import HomeWork2.HomeWork2_3.AuthMessage;
 
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.Socket;
 import java.util.Scanner;
 
@@ -35,6 +34,7 @@ public class ClientController implements Controller {
             sock = new Socket(SERVER_ADDR, SERVER_PORT);
             in = new Scanner(sock.getInputStream());
             out = new PrintWriter(sock.getOutputStream(), true);
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -68,6 +68,7 @@ public class ClientController implements Controller {
             out.close();
             in.close();
         } catch (IOException exc) {
+            exc.printStackTrace();
         }
     }
 }
