@@ -99,7 +99,7 @@ public class Server {
     }
 
     public void writeLocalHistory(String message) {
-        String str = message + "\r\n";
+        String str = message + System.lineSeparator();
         try {
             bw.write(str);
             bw.flush();
