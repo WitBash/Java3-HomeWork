@@ -7,7 +7,10 @@ import HomeWork2.HomeWork2_3.MessageType;
 
 import java.io.*;
 import java.net.Socket;
-import java.sql.ResultSet;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 public class ClientHandler {
     private Server server;
@@ -20,7 +23,8 @@ public class ClientHandler {
         this.socket = socket;
         try {
             channel = ChannelBase.of(socket);
-            new Thread(() -> {
+            ExecutorService executorService = Executors.newSingleThreadExecutor();
+            executorService.execute(() -> {
                 waitingForAuthorization();
                 System.out.println(nick + " handler waiting for new massages");
                 while (socket.isConnected()) {
@@ -41,7 +45,8 @@ public class ClientHandler {
                             System.out.println("Invalid type message");
                     }
                 }
-            }).start();
+            });
+            executorService.shutdown();
         } catch (IOException e) {
             e.printStackTrace();
         }
