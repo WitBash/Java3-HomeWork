@@ -5,10 +5,12 @@ import HomeWork2.HomeWork2_3.ChannelBase;
 import HomeWork2.HomeWork2_3.Message;
 import HomeWork2.HomeWork2_3.MessageType;
 
-import java.io.IOException;
+import java.io.*;
 import java.net.Socket;
-import java.sql.ResultSet;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 public class ClientHandler {
     private Server server;
@@ -21,9 +23,9 @@ public class ClientHandler {
         this.socket = socket;
         try {
             channel = ChannelBase.of(socket);
-            new Thread(() -> {
+            ExecutorService executorService = Executors.newSingleThreadExecutor();
+            executorService.execute(() -> {
                 waitingForAuthorization();
-
                 System.out.println(nick + " handler waiting for new massages");
                 while (socket.isConnected()) {
                     Message msg = channel.getMessage();
@@ -37,36 +39,37 @@ public class ClientHandler {
                             break;
                         case BROADCAST_CHAT:
                             server.sendBroadcastMessage(nick + " : " + msg.getBody());
+                            server.writeLocalHistory(nick + " : " + msg.getBody());
                             break;
                         default:
                             System.out.println("Invalid type message");
                     }
                 }
-            }).start();
+            });
+            executorService.shutdown();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     private synchronized void waitingForAuthorization() {
-                Thread authorizationThread = new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        auth();
-                    }
-                });
-                authorizationThread.start();
-                try {
-                    authorizationThread.join(120000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
-                if (nick == null) {
-                    sendMessage("Authorization timeout");
-                    System.out.println("Authorization timeout");
-                    closeSocket(socket);
-                }
+        Thread authorizationThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                auth();
+            }
+        });
+        authorizationThread.start();
+        try {
+            authorizationThread.join(120000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        if (nick == null) {
+            sendMessage("Authorization timeout");
+            System.out.println("Authorization timeout");
+            closeSocket(socket);
+        }
         return;
     }
 
@@ -107,6 +110,7 @@ public class ClientHandler {
                         System.out.println(msg);
                         channel.sendMessage(msg);
                         server.subscribe(this);
+                        server.sendLocalHistory(nick);
                         break;
                     }
                 }

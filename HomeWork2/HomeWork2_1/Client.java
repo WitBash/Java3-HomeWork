@@ -6,6 +6,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.IOException;
 
 public class Client extends JFrame implements ClientUi {
 
@@ -17,7 +18,6 @@ public class Client extends JFrame implements ClientUi {
     public Client(Controller controller) {
 
         this.controller = controller;
-
         setBounds(600, 300, 500, 500);
         setTitle("Client");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -33,21 +33,6 @@ public class Client extends JFrame implements ClientUi {
 
         jtf = new JTextField();
         bottomPanel.add(jtf, BorderLayout.CENTER);
-
-//        JPanel bottomPanel1 = new JPanel(new GridLayout());
-//        add(bottomPanel1, BorderLayout.NORTH);
-//        JTextField loginField = new JTextField();
-//        JTextField passwordField = new JTextField();
-//        JButton jbAuth = new JButton("AUTH");
-//        bottomPanel1.add(loginField);
-//        bottomPanel1.add(passwordField);
-//        bottomPanel1.add(jbAuth);
-//        jbAuth.addActionListener(e -> {
-//            String login = loginField.getText();
-//            String password = passwordField.getText();
-//            AuthMessage authMessage = new AuthMessage(login, password);
-//            sendMsg(authMessage);
-//        });
 
         jbSend.addActionListener(e -> {
             sendMsg();
