@@ -13,8 +13,11 @@ import java.util.Collection;
 public class TestTask2 {
     @Parameterized.Parameters
     public static Collection<int[][]> data() {
-        return Arrays.asList(new int[][][]{{{3, 5, 8}, {2, 3, 4, 5, 1, 4, 3, 5, 8}}, {{1, 3, 5, 8}, {2, 3, 4, 5, 4, 1, 3, 5, 8}}, {{8}, {2, 3, 4, 5, 1, 4, 3, 4, 8}}, {{5, 8}, {2, 3, 4, 5, 1, 4, 4, 5, 8}},
-
+        return Arrays.asList(new int[][][]{
+                {{3, 5, 8}, {2, 3, 4, 5, 1, 4, 3, 5, 8}},
+                {{1, 3, 5, 8}, {2, 3, 4, 5, 4, 1, 3, 5, 8}},
+                {{8}, {2, 3, 4, 5, 1, 4, 3, 4, 8}},
+                {{5, 8},{2, 3, 4, 5, 1, 4, 4, 5, 8}},
         });
     }
 
